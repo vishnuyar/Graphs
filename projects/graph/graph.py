@@ -13,42 +13,85 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        if (v1 in self.vertices) & (v2 in self.vertices):
+            self.vertices[v1].add(v2)
+        else:
+            raise Exception("vertex does not exist")
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        if vertex_id in self.vertices:
+            return self.vertices[vertex_id]
+        else:
+            raise Exception("vertex does not exist")
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        visited = set()
+        bft_queue = Queue()
+        bft_queue.enqueue(starting_vertex)
+        #visited.add(starting_vertex)
+        while bft_queue.size() > 0:
+            vertex = bft_queue.dequeue()
+            if vertex not in visited:
+                print(vertex)
+                visited.add(vertex)
+                for neighbour in self.get_neighbors(vertex):
+                    bft_queue.enqueue(neighbour)
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        visited = set()
+        bft_stack = Stack()
+        bft_stack.push(starting_vertex)
+        #visited.add(starting_vertex)
+        while bft_stack.size() > 0:
+            vertex = bft_stack.pop()
+            if vertex not in visited:
+                print(vertex)
+                visited.add(vertex)
+                for neighbour in self.get_neighbors(vertex):
+                    bft_stack.push(neighbour)
+   
 
-    def dft_recursive(self, starting_vertex):
+
+
+    def dft_recursive(self, starting_vertex,visited=None):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
-        pass  # TODO
+        
+        if visited is None:
+            print(starting_vertex)
+            visited = []
+            visited.append(starting_vertex)
+            for edge in self.get_neighbors(starting_vertex):
+                    self.dft_recursive(edge,visited)
+        else:
+            if starting_vertex not in visited:
+                print(starting_vertex)
+                visited.append(starting_vertex)
+                for edge in self.get_neighbors(starting_vertex):
+                    self.dft_recursive(edge,visited)
+
+
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -56,7 +99,23 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        paths = []
+        visited = set()
+        bft_queue = Queue()
+        bft_queue.enqueue([starting_vertex])
+        while bft_queue.size() > 0:
+            vertex_path = bft_queue.dequeue()
+            print(vertex_path)
+            vertex = vertex_path[-1]
+            if vertex not in visited:
+                visited.add(vertex)
+                for neighbour in self.get_neighbors(vertex):
+                    if neighbour == destination_vertex:
+                        path.append(vertex_path.append(neighbour))
+                    else:
+                        bft_queue.enqueue(vertex_path.append(neighbour))
+        print(path)
+        
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -128,12 +187,14 @@ if __name__ == '__main__':
         1, 2, 4, 6, 3, 5, 7
     '''
     graph.dft(1)
+    
     graph.dft_recursive(1)
 
     '''
     Valid BFS path:
         [1, 2, 4, 6]
     '''
+    print('reached')
     print(graph.bfs(1, 6))
 
     '''
@@ -141,5 +202,5 @@ if __name__ == '__main__':
         [1, 2, 4, 6]
         [1, 2, 4, 7, 6]
     '''
-    print(graph.dfs(1, 6))
-    print(graph.dfs_recursive(1, 6))
+    # print(graph.dfs(1, 6))
+    # print(graph.dfs_recursive(1, 6))
