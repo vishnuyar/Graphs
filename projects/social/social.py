@@ -67,19 +67,17 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        user_graphs = {}  # Note that this is a dictionary, not a set
+        @user_graphs = {}  # Note that this is a dictionary, not a set
         
         sc_bft = Queue()
-        visited = set()
+        visited = {}
         sc_bft.enqueue([user_id])
         while sc_bft.size() > 0:
             current_user_path = sc_bft.dequeue()
             current_user = current_user_path[-1]
-            #print(f'{current_user}:{current_user_path}')
-            if current_user not in user_graphs.keys():
-                user_graphs.update({current_user:current_user_path})
-            if current_user not in visited:
-                visited.add(current_user)
+            print(f'{current_user}:{current_user_path}')
+            if current_user not in visited.keys():
+                visited.udpate(current_user:current_user_path)
                 for friend in self.friendships[current_user]:
                     if friend not in visited:
                         friendship_path = current_user_path.copy()
@@ -87,7 +85,7 @@ class SocialGraph:
                         sc_bft.enqueue(friendship_path)
 
         
-        return user_graphs
+        return visited
 
 
 if __name__ == '__main__':
