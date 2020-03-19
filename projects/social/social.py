@@ -1,3 +1,6 @@
+import random
+import itertools
+from util import Stack,Queue
 class User:
     def __init__(self, name):
         self.name = name
@@ -42,11 +45,18 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
+        
 
         # Add users
+        for i in range(num_users):
+            self.add_user(f'user_{i+1}')
 
         # Create friendships
+        friendsships = list(itertools.combinations(range(1,num_users+1),avg_friendships))
+        random.shuffle(friendsships)
+        total_friendships = (num_users*avg_friendships)//2
+        for frienship in friendsships[:total_friendships]:
+            self.add_friendship(frienship[0],frienship[1])
 
     def get_all_social_paths(self, user_id):
         """
@@ -57,9 +67,27 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
-        return visited
+        user_graphs = {}  # Note that this is a dictionary, not a set
+        
+        sc_bft = Queue()
+        visited = set()
+        sc_bft.enqueue([user_id])
+        while sc_bft.size() > 0:
+            current_user_path = sc_bft.dequeue()
+            current_user = current_user_path[-1]
+            #print(f'{current_user}:{current_user_path}')
+            if current_user not in user_graphs.keys():
+                user_graphs.update({current_user:current_user_path})
+            if current_user not in visited:
+                visited.add(current_user)
+                for friend in self.friendships[current_user]:
+                    if friend not in visited:
+                        friendship_path = current_user_path.copy()
+                        friendship_path.append(friend)
+                        sc_bft.enqueue(friendship_path)
+
+        
+        return user_graphs
 
 
 if __name__ == '__main__':
@@ -67,4 +95,5 @@ if __name__ == '__main__':
     sg.populate_graph(10, 2)
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
-    print(connections)
+    for i in sorted(connections.keys()):
+        print(f'{i}:{connections[i]}')
