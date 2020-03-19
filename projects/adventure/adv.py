@@ -49,11 +49,30 @@ def room_recursive(starting_room,room_graph,room_dict=None,visit_list=None):
         return room_dict,visit_list
     
 
-def getrooms(room_no,room_dict):
-    directions = room_dict[room_no]
-    for direction in directions:
-        print(direction,directions[direction])
-
+def bft(starting_vertex):
+        """
+        Print each vertex in breadth-first order
+        beginning from starting_vertex.
+        """
+        visited = []
+        room_dict = {}
+        bft_queue = Queue()
+        bft_queue.enqueue(starting_vertex)
+        #visited.add(starting_vertex)
+        while bft_queue.size() > 0:
+            vertex = bft_queue.dequeue()
+            roomid = vertex.id
+            if roomid not in room_dict.keys():
+                #print(roomid)
+                visited.append(roomid)
+                room_dict[roomid] = {}
+                directions = vertex.get_exits()
+                for dir in directions:
+                    room_dict[roomid].update({dir:vertex.get_room_in_direction(dir).id})
+                for direction in vertex.get_exits():
+                    new_room = vertex.get_room_in_direction(direction)
+                    bft_queue.enqueue(new_room)
+        return room_dict,visited
 
 
 def bfs(starting_vertex, destination_vertex,room_dict):
@@ -88,7 +107,8 @@ def bfs(starting_vertex, destination_vertex,room_dict):
 
 #print(type(world.starting_room.id))
 room_dict,visited = room_recursive(world.starting_room,room_graph)
-#print(visited)
+#room_dict,visited = bft(world.starting_room)
+print(visited)
 #print(room_dict)
 for i in range(len(visited)-1):
     traversal_path.extend(bfs(visited[i],visited[i+1],room_dict))
