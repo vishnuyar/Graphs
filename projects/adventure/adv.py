@@ -49,39 +49,14 @@ def room_recursive(starting_room,room_graph,room_dict=None,visit_list=None):
         return room_dict,visit_list
     
 
-def bft(starting_vertex):
-        """
-        Print each vertex in breadth-first order
-        beginning from starting_vertex.
-        """
-        visited = []
-        room_dict = {}
-        bft_queue = Queue()
-        bft_queue.enqueue(starting_vertex)
-        #visited.add(starting_vertex)
-        while bft_queue.size() > 0:
-            vertex = bft_queue.dequeue()
-            roomid = vertex.id
-            if roomid not in room_dict.keys():
-                #print(roomid)
-                visited.append(roomid)
-                room_dict[roomid] = {}
-                directions = vertex.get_exits()
-                for dir in directions:
-                    room_dict[roomid].update({dir:vertex.get_room_in_direction(dir).id})
-                for direction in vertex.get_exits():
-                    new_room = vertex.get_room_in_direction(direction)
-                    bft_queue.enqueue(new_room)
-        return room_dict,visited
 
 
 def bfs(starting_vertex, destination_vertex,room_dict):
         """
-        Return a list containing the shortest path from
+        Return a directions containing the shortest path from
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        paths = []
         visited = set()
         bft_queue = Queue()
         dir_queue = Queue()
@@ -105,18 +80,16 @@ def bfs(starting_vertex, destination_vertex,room_dict):
 
 
 
-#print(type(world.starting_room.id))
+#Traverse all the rooms in the world using recursive dft 
 room_dict,visited = room_recursive(world.starting_room,room_graph)
-#room_dict,visited = bft(world.starting_room)
-print(visited)
+#print(visited)
 #print(room_dict)
 for i in range(len(visited)-1):
-    traversal_path.extend(bfs(visited[i],visited[i+1],room_dict))
-#print(len(visited_rooms))
-# for i in range(len(visited_rooms)-1):
-#     print(f'from {visited_rooms[i].id} to {visited_rooms[i+1].id}')
-#     roompath,directions_path = bfs(visited_rooms[i],visited_rooms[i+1])
-#     print(directions_path)
+    #Get the shortest between the two rooms
+    path = bfs(visited[i],visited[i+1],room_dict)
+    #print(f'{visited[i]} to {visited[i+1]} in {len(path)} ')
+    traversal_path.extend(path)
+
 
 
 
